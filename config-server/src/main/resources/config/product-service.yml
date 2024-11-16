@@ -1,0 +1,36 @@
+server:
+  port: 8082
+spring:
+  application:
+    version: product service version v2.0
+  datasource:
+    url: jdbc:h2:mem:dbproduct;DB_CLOSE_ON_EXIT=FALSE  # Mode in-memory (ganti sesuai kebutuhan)
+    driverClassName: org.h2.Driver
+    username: sa
+    password: # Default H2 username
+    hikari:
+      minimum-idle: 5  # Jumlah minimum koneksi yang selalu tersedia di pool
+      maximum-pool-size: 10  # Jumlah maksimum koneksi yang diperbolehkan di pool
+      idle-timeout: 30000  # Waktu maksimal dalam milidetik untuk koneksi yang tidak digunakan
+      max-lifetime: 1800000  # Waktu hidup maksimum untuk koneksi dalam pool
+      connection-timeout: 30000  # Waktu tunggu maksimum untuk koneksi yang sedang dibutuhkan
+  jpa:
+    hibernate:
+      ddl-auto: update  # Hibernate untuk menyesuaikan skema database
+    show-sql: true  # Menampilkan query SQL yang dijalankan
+    database-platform: org.hibernate.dialect.H2Dialect  # Dialek H2 untuk Hibernate
+  h2:
+    console:
+      enabled: true  # Mengaktifkan H2 Console di /h2-console
+      path: /h2-console
+      
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
