@@ -29,4 +29,10 @@ spring:
   h2:
     console:
       enabled: true  # Mengaktifkan H2 Console di /h2-console
-      path: /h2-console     
+      path: /h2-console   
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  
