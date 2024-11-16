@@ -9,6 +9,7 @@ eureka:
 spring:
   application:
     name: customer-service
+    version: Customer Service v1.0
   datasource:
     url: jdbc:h2:mem:dbcustomer;DB_CLOSE_ON_EXIT=FALSE  # Mode in-memory (ganti sesuai kebutuhan)
     driverClassName: org.h2.Driver
