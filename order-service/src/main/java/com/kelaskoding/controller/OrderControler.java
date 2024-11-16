@@ -1,6 +1,8 @@
 package com.kelaskoding.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +17,19 @@ import com.kelaskoding.service.OrderService;
 
 @RestController
 @RequestMapping("/api/orders")
+@RefreshScope
 public class OrderControler {
 
+	@Value("${spring.application.version}")
+	private String versionString;
+	
 	@Autowired
 	private OrderService orderService;
+	
+	@GetMapping("/version")
+	public String getVersionOrder() {
+		return versionString;
+	}
 
 	@PostMapping
 	public Order save(@RequestBody Order order) {
