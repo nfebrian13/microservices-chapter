@@ -32,6 +32,9 @@ spring:
       path: /h2-console   
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
   endpoints:
     web:
       exposure:
