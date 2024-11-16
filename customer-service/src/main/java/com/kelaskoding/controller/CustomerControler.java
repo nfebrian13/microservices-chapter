@@ -1,6 +1,7 @@
 package com.kelaskoding.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,9 @@ import com.kelaskoding.service.CustomerService;
 @RequestMapping("/api/customers")
 public class CustomerControler {
 
+	@Value("${spring.application.version}")
+	private String versionString;
+	
 	@Autowired
 	private CustomerService customerService;
 
@@ -27,6 +31,11 @@ public class CustomerControler {
 	@GetMapping("/{id}")
 	public Customer findById(@PathVariable("id") Long id) {
 		return customerService.findById(id);
+	}
+	
+	@GetMapping("/version")
+	public String getVersionCustomer() {
+		return versionString;
 	}
 
 	@GetMapping
