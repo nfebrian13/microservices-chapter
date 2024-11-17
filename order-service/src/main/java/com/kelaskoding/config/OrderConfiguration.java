@@ -22,6 +22,12 @@ public class OrderConfiguration {
 	@Autowired
 	private LoadBalancedExchangeFilterFunction loadBalancedExchangeFilterFunction;
 
+	@Autowired
+	private WebClient.Builder webClientBuilderCustomer;
+	
+	@Autowired
+	private WebClient.Builder webClientBuilderProduct;
+	
 	@Bean
 	@LoadBalanced
 	RestTemplate restTemplate() {
@@ -30,13 +36,20 @@ public class OrderConfiguration {
 
 	@Bean
 	WebClient webClientCustomer() {
-		return WebClient.builder().baseUrl("http://CUSTOMER-SERVICE").filter(loadBalancedExchangeFilterFunction)
+		return webClientBuilderCustomer
+//				WebClient.builder()
+				.baseUrl("http://CUSTOMER-SERVICE")
+				.filter(loadBalancedExchangeFilterFunction)
 				.build();
 	}
 
 	@Bean
 	WebClient webClientProduct() {
-		return WebClient.builder().baseUrl("http://PRODUCT-SERVICE").filter(loadBalancedExchangeFilterFunction).build();
+		return webClientBuilderProduct
+//				WebClient.builder()
+				.baseUrl("http://PRODUCT-SERVICE")
+				.filter(loadBalancedExchangeFilterFunction)
+				.build();
 	}
 
 	@SneakyThrows
