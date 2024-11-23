@@ -2,27 +2,35 @@ package com.kelaskoding.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.Customizer;
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
-@Configuration
 @EnableWebSecurity
+@Configuration
 public class SecurityConfig {
 
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-//                .requestMatchers("/h2-console/**").permitAll()  // Mengizinkan akses tanpa autentikasi ke H2 console
-				.requestMatchers("/api/auth/register", 
-								 "/api/auth/generateToken", 
-								 "/api/auth/validateToken",
-								 "/h2-console/**")
-				.permitAll().anyRequest().authenticated() // Mengharuskan autentikasi untuk request lainnya
-				.and().csrf().disable() // Menonaktifkan CSRF untuk H2 console
-				.headers().frameOptions().disable(); // Menonaktifkan frame options untuk H2 console
-		return http.build();
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(authorize -> {
+			authorize.requestMatchers(antMatcher("/h2-console/**")).permitAll()
+					.requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/register")).permitAll()
+					.requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/generateToken")).permitAll()
+					.requestMatchers(antMatcher(HttpMethod.POST, "/api/auth/validateToken")).permitAll().anyRequest()
+					.authenticated();
+		}).headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+				.httpBasic(Customizer.withDefaults())
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+		return httpSecurity.build();
 	}
 
 	@Bean
