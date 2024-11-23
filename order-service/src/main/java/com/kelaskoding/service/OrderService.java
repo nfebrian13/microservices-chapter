@@ -17,6 +17,7 @@ import com.kelaskoding.repository.OrderRepository;
 import com.kelaskoding.webclient.CustomerClient;
 import com.kelaskoding.webclient.ProductClient;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -54,6 +55,7 @@ public class OrderService {
 		orderRepository.deleteById(id);
 	}
 
+	@CircuitBreaker(name="customerService", fallbackMethod = "fallbackFindCustomerById")
 	public OrderResponse findByOrderId(Long id) {
 		Optional<Order> optOrder = orderRepository.findById(id);
 		if (!optOrder.isPresent()) {
@@ -105,4 +107,9 @@ public class OrderService {
 //		return restTemplate.getForObject("http://localhost:8082/api/products/" + id, Product.class);
 		return restTemplate.getForObject("http://PRODUCT-SERVICE/api/products/" + id, Product.class);
 	}
+	
+	private OrderResponse fallbackFindCustomerById(Long id, Throwable throwable) {
+		return new OrderResponse();
+	}
+	
 }
